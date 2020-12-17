@@ -1,0 +1,39 @@
+/**************************************
+ * ep2 registers
+ *************************************/
+8086 registers:
+    * Naming similar to x86 x64 registers)
+    * 8086 was a 16 bit cpu.
+
+//////////////////////////////////////
+General purpose regs: ax bx cx and dx.
+each of these also had 2 8 bit versions of the register
+fox example ax had ah and al (i.e. hi and low)
+* if you want to change bx the compiler expects that it is back to the orig value before you function leaves
+* so you must push rbx at the top and pop rbx at the bottom before ret
+/////////////////////////////////////
+
+/////////////////////////////////////
+index regs: si di bp and sp
+source , dest , base pointer, and stack pointer
+/////////////////////////////////////
+
+/////////////////////////////////////
+instruction pointer: ip
+/////////////////////////////////////
+
+/////////////////////////////////////
+segment registers: cs ds es and ss
+memory was segmented back then and these were used for that paradigm.
+not really used.
+/////////////////////////////////////
+
+/////////////////////////////////////
+flags register: flags
+stores the state of comparisons, carry, etc
+/////////////////////////////////////
+
+/**************************************
+ * ep3 32 bit registers
+ *************************************/
+ Naming conventions of above are extended to 32 bit registers
