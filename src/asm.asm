@@ -31,7 +31,7 @@ callAsmRbx proc
     mov rbx, 0
     ; -1 in 2s comp is all 1s (i.e. write the pos version, flip all bits and add 1)
     mov bx, -1
-    ; clear the high byte of the 16 bit register bx
+    ; clear the high byte of the 16 bit remister bx
     mov bh, 0
 
     pop rbx
@@ -51,4 +51,14 @@ callAsmUpper32Clear proc
     mov eax, 0
     ret
 callAsmUpper32Clear endp
+end
+
+moveToRAMAddr proc
+    ; move the RAM addr that mybyte points to into rax
+    lea rax, mybyte
+    ; manipulate the memory pointer stored in rax so that the data stored at its location is now 0
+    mov byte ptr [rax], 0
+    ; same as above but now we move 1 into it
+    mov mybyte, 1
+moveToRAMAddr endp
 end

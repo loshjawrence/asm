@@ -94,3 +94,27 @@ real8: 64 bits: 1 sign, 11 exp, 52 mantissa
 real10: 80 bits: 1 sign, 15 exp, 64 bit mantissa.
 ===============
 
+/**************************************
+ * ep5 mov and lea(load effective addr)
+ *************************************/
+ mov dst, src
+ for move the src can be an immediate or a register
+ but dst and src must be the same size. both cannot be "memory" i.e. a .data segment variable
+ dst must be memory or a reg
+
+ can use mov as a multibyte nop (nop is only 1 byte instruction)
+ mov rax, rax is a 3 byte nop
+ mov al, al is a 2 byte nop
+
+lea is acutally an arith instr, it computes an SIB addr
+lea does not change any flags.
+in the .data section your variables are actually pointers to ram addresses
+so to move the ram address it points to to a reg
+you can't use mov since it move the data stored at the address.
+you need lea to move the ram address to a reg.
+once the ram address is in a reg you can move data to that address indirectly
+see moveToRAMAddr in asm.asm
+
+/**************************************
+ * ep6 basic arith instr (add sub inc dec)
+ *************************************/
