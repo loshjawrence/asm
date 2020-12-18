@@ -69,3 +69,28 @@ i.e. ah, bh, ch, dh
 |R14            |R14D     |R14W|R14B|
 |R15            |R15D     |R15W|R15B|
 |RFlags         |EFlags             |
+
+NOTE: using 32bit regs with 32bit instructions (on x64 hw) zeros the top 32 bits of the register.
+however the 16 and 8 bit instructions do not zero the upper msb's
+
+/**************************************
+ * ep4 Fundamental data types
+ *************************************/
+ integers: byte, word, dword, qword
+ floating point: real4, real8, real10
+ simd pointers: xmmword, ymmword, zmmword
+
+signed and unsigned comes down to which instructions you use.
+its really up to the programmer to keep track of what data is intended to be signed
+example: unsigned: div and mul, signed: idiv  and imul
+for other instructions like add and sub theres no difference
+ x86 is designed to use 2s comp when doing signed arith
+to get the pos version of a signed number, flip the bits and add 1
+
+===============
+Floating point
+real4: 32 bits: 1 sign, 8 exp, 23 mantissa
+real8: 64 bits: 1 sign, 11 exp, 52 mantissa
+real10: 80 bits: 1 sign, 15 exp, 64 bit mantissa.
+===============
+

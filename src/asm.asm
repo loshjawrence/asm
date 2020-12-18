@@ -1,5 +1,29 @@
+.data
+; real4 is 32 bits or 4 bytes
+myfloat real4 67.2
+; real8 is 64 bits or 8 bytes
+mydouble real8 7.2
+
+; db means definebyte, can also use byte
+mybyte db 1
+mybyte2 byte 2
+
+; word 16 bits or 2 bytes
+myword word 3
+myword2 dw 4
+
+; double word 32 bits or 4 bytes
+mydword dd 5;
+mydword2 dword 6;
+
+; quad word 64 bits or 8 bytes
+myqword dq 7;
+myqword2 qword 8;
+
 .code
-callAsm proc
+; can step in the debugger here and add stuff to watch window or pull up the register window with
+; Debug->Windows->Registers
+callAsmRbx proc
     ; NOTE: compiler expects rbx to the same as it was before you return from your function
     ; so you must push and pop before you edit it.
     push rbx
@@ -15,5 +39,16 @@ callAsm proc
     ; rax is the result that is returned
     mov rax, 123
     ret
-callAsm endp
+callAsmRbx endp
+
+callAsmUpper32Clear proc
+    ; All 1's in the 64 bit reg alias then watch how these others behave
+    ; basically the point is that only the 32 bit call has the behavior
+    ; of additionally clearing hte top msb's
+    mov rax, -1
+    mov al, 0
+    mov ax, 0
+    mov eax, 0
+    ret
+callAsmUpper32Clear endp
 end

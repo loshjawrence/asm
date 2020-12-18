@@ -4,11 +4,11 @@
 
 // extern means this symbol is external to this file.
 // "C" is the C calling convention, C must be capitalized.
-extern "C" int callAsm();
+extern "C" int callAsmUpper32Clear();
 
 int main()
 {
-	std::cout << "\nResult of callAsm(): " << callAsm() << "\n";
+	std::cout << "\nResult of callAsm(): " << callAsmUpper32Clear() << "\n";
 
 	getchar();
 	return 0;
