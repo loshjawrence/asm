@@ -37,3 +37,9 @@ stores the state of comparisons, carry, etc
  * ep3 32 bit registers
  *************************************/
  Naming conventions of above are extended to 32 bit registers
+ It is the same name but with an e prefix. the older registers are just
+ the lsb portions of register
+ x64 registers are again the same register names as the 16bit versions but with an r prefix.
+ x64 also adds access to the lowest byte in the other registers to make things consistant.
+
+ continue from ep 3 2:00 mark
