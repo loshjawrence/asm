@@ -34,12 +34,38 @@ stores the state of comparisons, carry, etc
 /////////////////////////////////////
 
 /**************************************
- * ep3 32 bit registers
+ * ep3 x86 x64 registers
  *************************************/
  Naming conventions of above are extended to 32 bit registers
  It is the same name but with an e prefix. the older registers are just
  the lsb portions of register
- x64 registers are again the same register names as the 16bit versions but with an r prefix.
+ x64 registers are again the same register names as the 16bit versions but with an r prefix for the full 64 bits.
  x64 also adds access to the lowest byte in the other registers to make things consistant.
+ so for the old 8086 registers they all have a L suffix to access the lowest byte
+ so al, bl, cl, dl, sil, dil, spl, bpl.
+ the new x64 registers R8-R15 have 32 16 and 8 bit aliases
+ the 32 alias end with d(double word or dword) the 16 bit end with w(word) and the 8 bit end with b(byte)
+ the ip register has only EIP(32 bit) and RIP(64 bit) alias
+ the flags register has rflags, eflags and flags for 64, 32, 16 bit aliases
 
- continue from ep 3 2:00 mark
+so all in all it should look like:
+a,b,c, and d also have the old 8086 way of accessing the upper bits of the 16 bit section
+i.e. ah, bh, ch, dh
+|RAX            |EAX      |AX  |AL  |
+|RBX            |EBX      |BX  |BL  |
+|RCX            |ECX      |CX  |CL  |
+|RDX            |EDX      |DX  |DL  |
+|RSI            |ESI      |SI  |SIL |
+|RDI            |EDI      |DI  |DIL |
+|RSP            |ESP      |SP  |SPL |
+|RBP            |EBP      |BP  |BPL |
+|RIP            |EIP                |
+|R8             |R8D      |R8W |R8B |
+|R9             |R9D      |R9W |R9B |
+|R10            |R10D     |R10W|R10B|
+|R11            |R11D     |R11W|R11B|
+|R12            |R12D     |R12W|R12B|
+|R13            |R13D     |R13W|R13B|
+|R14            |R14D     |R14W|R14B|
+|R15            |R15D     |R15W|R15B|
+|RFlags         |EFlags             |
