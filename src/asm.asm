@@ -4,6 +4,7 @@ myfloat real4 67.2
 ; real8 is 64 bits or 8 bytes
 mydouble real8 7.2
 
+; for signed stick an s in front
 ; db means definebyte, can also use byte
 mybyte db 1
 mybyte2 byte 2
@@ -38,6 +39,7 @@ callAsmRbx proc
 
     ; rax is the result that is returned
     mov rax, 123
+
     ret
 callAsmRbx endp
 
@@ -49,6 +51,7 @@ callAsmUpper32Clear proc
     mov al, 0
     mov ax, 0
     mov eax, 0
+
     ret
 callAsmUpper32Clear endp
 end
@@ -60,5 +63,44 @@ moveToRAMAddr proc
     mov byte ptr [rax], 0
     ; same as above but now we move 1 into it
     mov mybyte, 1
+
+    ret
 moveToRAMAddr endp
+end
+
+triggerFlagCarry proc
+    ; set to all 1s
+    mov rax, -1
+    ; this will overflow the reg and set the carry flag
+    add rax, 1
+
+    mov rax, -1
+    ; inc will not set the carry flag
+    inc rax
+
+    ret
+triggerFlagCarry endp
+
+triggerFlagParity proc
+    ; parity 1 since even num of 1
+    mov eax, 3
+    and eax, eax
+
+    ; parity 0 since even num of 1
+    mov eax, 7
+    and eax, eax
+
+    ret
+triggerParityFlag endp
+
+triggerFlagSign proc
+    mov eax, 7
+    mov ecx, 12
+    ; result neg
+    sub eax, ecx
+    ; result pos
+    add eax, ecx
+
+    ret
+triggerSignFlag endp
 end

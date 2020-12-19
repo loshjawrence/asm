@@ -97,6 +97,7 @@ real10: 80 bits: 1 sign, 15 exp, 64 bit mantissa.
 /**************************************
  * ep5 mov and lea(load effective addr)
  *************************************/
+mov supports an imm64
  mov dst, src
  for move the src can be an immediate or a register
  but dst and src must be the same size. both cannot be "memory" i.e. a .data segment variable
@@ -117,4 +118,110 @@ see moveToRAMAddr in asm.asm
 
 /**************************************
  * ep6 basic arith instr (add sub inc dec)
+ *************************************/
+signed carry is on overflow flag, unsiged carry is on carry flag
+flags they affect: overflow carry sign zero, aux carry, parity
+LOCK is supported
+The 32 bit versions of add generates more efficient machine code than 64 bit.
+64bit versions add an rex prefix in machine code.
+can use 'add reg, 0' to update the flags according to reg without changing its value
+similar to `and reg, reg` and `or reg, reg`.
+
+`cmp reg, reg` sets the same flags as `sub reg, reg` since that's essentially what it's doing
+
+`add reg, 1` if you need `inc reg` but also need the carry flag.
+
+add is faster than mul. if you need to double a reg use `add reg, reg`. usually you would use shifts.
+
+There is no `add reg64 imm64`. if the reg is 64bits then the immediate sign is extended
+
+for sub, overflow flag is for signed borrow and carry flag is unsigned borrow.
+flags: same as add
+
+sub sign extends imm32s, if you need to subtract a imm64 you need to use mov first.
+
+quick way to zero is `sub reg, reg` but `xor reg, reg` is used for this purpose.
+can use add and sub to perform a swap, similar to xor swap, but just use xchg since faster and easier to read.
+
+dec, like inc, doesnt set carry flag but it will set the zero flag. useful for loops if you want to know if they wrapped around
+on their counter but leave the carry flags for the arith in the loop block.
+
+/**************************************
+ * ep7 bool (and or not xor)
+ *************************************/
+ to mark a number as binary in stick a b on the end
+ 01001111b
+ xor is similar to asking which bits are not equal or where do i have an odd number of bits
+ xnor is similar to asking which bits are equal or where do i have an even number of bits
+ for xnor simply not the result of xor.
+
+ or is similar to asking where are there 1's
+ nor is similar to asking where do i have only 0's
+ for nor simply not the result of or.
+
+ and is similar to asking where are there only 1's
+ nand is simliar to asking where are there not only 1's
+ for nand simply not the result of and.
+
+ nand and nor are universal gates, can make anything out of them.
+
+ if you want to check if a reg is 0 do `and reg, reg` then check the zero flag
+
+
+/**************************************
+ * ep8 shift rotate and bit manip
+ *************************************/
+shl, shr, sal, sar, rol, ror, rcl, rcr, shld, shrd
+
+shl is shift left
+shr is shift right
+the carry flag holds the bit that was shifted out
+if the immediate is 1 the the overflow flag is set if the sign changed
+can shift by a variable amount but only if using cl:
+mov cl, 5
+shl edx, cl
+if you want to mul or div by a pow2 then you can use shifts but the value in the reg must be unsigned
+
+but..
+sal sar are arith shifts which preserve the sign bit and prevents the shifts from stepping on it.
+sar with shift the sign bit into spots on the right of the sign bit to keep the math correcct.
+shl and sal are the same instruction, i.e. the same behavior, also the same byte code if looking at the disassembly
+
+rotates have similar special behavior to shifts (variable use of cl) and when imm is 1 the overflow flags are used
+
+rcl rcr are "rotate through the carry flag" instructions, so it uses teh carry flag as an extra msb bit for the register
+shld shlr are double precision shifts. its a 3 opperand instruction example:
+shrd rax, rbx, 12
+rax is the msb portion and rbx is the lsb portion and the whole thing is shifted right by 12 and the msb portion of the result
+is saved in rax. rbx is unchanged after the instruction.
+
+/**************************************
+ * ep9 flags pushfq popfq pushf, popf
+ *************************************/
+flags register:
+  15 | 14 | 13 | 12 | 11 | 10 |  09 | 08 | 07 | 06 | 05 | 04 | 03 | 02 | 01 | 00 |
+     | NT |   IOPL  | OF | DF |  IF | TF | SF | ZF |    | AF |    | PF |    | CF |
+NOTE: not all instr set the various flags
+CF - carry flag, when theres an unsigned overflow, inc doesnt change this
+PF - parity flag, 1 if even num of bits i.e xnor, not really used anymore
+AF - aux carry flag, have due to back compat, overflow on low 4 bits of result
+ZF - zero flag, when result is 0
+SF - sign flag, 1 is neg 0 is pos
+TF - trap flag, allows debuggers to step through code
+IF - interrupt flag, allows interrupts to be called
+DF - direction flag, 0 counting up in ram, 1 counting down in ram, for string instr. NOTE: UP in msvc
+OF - overflow flag, signed overflow, overflow on 2nd highest msb, inc does change this
+IOPL - shows IO port privilege level
+NT - nested stask, shows if this task is nested
+CPUID - if you can toggle bit 21, then the cpu is capable of the cpuid instr
+pushfq ; push the rflags reg onto the stack
+; you can then store it in rax with:
+pop rax
+; you can then change rax however you want
+; then you can get the value back to the rflags reg with:
+push rax ; put our changed flags on the stack
+popfq ; take off the stack and put into the flags reg
+
+/**************************************
+ * ep10 conditional jump mov byte set
  *************************************/
