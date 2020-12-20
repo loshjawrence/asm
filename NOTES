@@ -425,7 +425,18 @@ so you can do double the ops of avx and 4x the ops of sse
 see main.cpp for some sse/avx intrinsics
 see testSIMD in asm for simd asm
 
-
+/**************************************
+ * ep16 SIMD
+ *************************************/
+ see testSIMD in asm.asm and main.cpp for notes
+ asm pneumonic:
+ {v}[add/sub/mul/div][p/s][s/d]
+ v - used for 256 bit avx
+ p/s - scalar or packed
+ s/d - singles or doubles
+ ex:
+ vaddss - 256 bit regs (ymm) add scalar single
+ subpd - 128 bit regs (xmm) sub packed doubles
 
 /**************************************
  * avx512 ep1

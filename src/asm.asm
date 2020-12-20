@@ -191,9 +191,15 @@ testSIMD proc
     ; views the contents as singles or 32bit floats
     addps xmm0, xmm1
     ; could also do sub,mul,div
+    ; scalar versions would be addss, subss, etc. and operate on lowest member
 
-    ; NOTE: double would be real8 data and stuff like
+    ; NOTE: double would be real8 data (array of 2 members ) and stuff like
     ; movapd, addpd, subpd, etc.
+
+    ; NOTE: for 256bit avx you prefix v to the instructions and use ymm instead of xmm
+    ; also the instructions are non destructive (3 operands)
+    ; ex: vaddps ymm2, ymm0, ymm1
+    ; the srcs can be reg or mem pointer (ymmword ptr [myRAMData])
 
     ret
 testSIMD endp
