@@ -204,4 +204,23 @@ testSIMD proc
     ret
 testSIMD endp
 
+AVXFoundationDetection proc
+    push rbx
+    mov eax, 7
+    mov ecx, 0
+
+    cpuid
+
+    ; shift bit 16 down to bit 0 and save result to eax
+    shr ebx, 16
+    and ebx, 1
+    mov eax, ebx
+
+
+    pop rbx
+
+    ret
+AVXFoundationDetection endp
+
+
 end ; ends the code section?

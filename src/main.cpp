@@ -7,9 +7,11 @@
 // "C" is the C calling convention, C must be capitalized.
 // extern "C" int* whileLoop();
 extern "C" int* testSIMD();
+extern "C" int AVXFoundationDetection();
 
 int main()
 {
+	std::cout << "\nSupports avx512 foundation instr: " << AVXFoundationDetection() << "\n";
 	std::cout << "\nResult of callAsm(): " << testSIMD() << "\n";
 
 	// // someArray
@@ -31,13 +33,15 @@ int main()
 
 	// 256 are avx
 	// d is for double
-	// p is for packed	
+	// p is for packed
 	__m256d v1 = { 0.0, 1.0, 2.0, 3.0 };
 	__m256d v2 = { 2.0, 4.0, 6.0, 8.0 };
 	__m256d v3 = _mm256_add_pd(v1, v2);
 	double d[4];
 	// _mm256_storer_pd(d, v3); // store aligned! f needs 32 byte alignment
 	_mm256_storeu_pd(d, v3); // store unaligned (f need not be aligned)
+	// NOTE: can also do it this way instead of copying
+	double* v3Ref = (double*)&v3;
 
 	getchar();
 	return 0;

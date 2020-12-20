@@ -1,3 +1,6 @@
+in msvc you must rclick project go to build deps and check masm
+when you make an .asm file is you `add item`->`cpp file`-> but name it .asm
+
 /**************************************
  * ep2 registers
  *************************************/
@@ -431,7 +434,7 @@ see testSIMD in asm for simd asm
  see testSIMD in asm.asm and main.cpp for notes
  asm pneumonic:
  {v}[add/sub/mul/div][p/s][s/d]
- v - used for 256 bit avx
+ v - used for 256/512 bit avx
  p/s - scalar or packed
  s/d - singles or doubles
  ex:
@@ -515,3 +518,35 @@ stores locations of matching pairs of elements in mask regs
 /**************************************
  * avx512 ep2
  *************************************/
+ avx512 programming can be done easily readably with agner fogs
+ vector class library: https://github.com/vectorclass/version2
+ dont use k0 since its reserved
+
+ to use k masks in asm you can do:
+ ; kmov is move to k mask reg. b is byte, d is dword, etc
+ mov eax, 01010101b
+ kmovb k1, eax
+ ; this operation has 8 ops so it uses the bits  of the lsb byte
+ ; in our k mask to do the operation masking.
+ ; channels with a 1 get updated and this is the syntax to use the kmask reg to
+ ; update the result:
+ vaddpd zmm0{k1}, zmm0, zmm1
+ ; also you can add decorations on k masks
+ ; z means zero the result where ther are zeros
+ vaddpd zmm0{k1}{z}, zmm0, zmm1
+
+ ; to broadcast you can copy 1 scalar to all elements of an avx512 vector
+ lea rax, myDouble; if myDouble is a real8 in the .data section
+ vaddpd zmm0, zmm0, real8 bcst [rax] ;
+
+ compressed displacement is used when doing sib addressing
+ i.e. scaled index base. If the scaled index part is a multple of the vector size
+ (size of teh avx reg you are using, ymm's are 32 bytes, zmm's are 64 bytes)
+ then it can compress the offset to use up only 1 byte in the instr instead of 4.
+ common when doing loop unrolling, ex:
+ vaddpd zmm0, zmm0, zmmword ptr[ rcx + 64*0 ]
+ vaddpd zmm1, zmm1, zmmword ptr[ rcx + 64*1 ]
+ vaddpd zmm2, zmm2, zmmword ptr[ rcx + 64*2 ]
+ vaddpd zmm3, zmm3, zmmword ptr[ rcx + 64*3 ]
+ so when the 64*x parts get encoded into the avx512 instr they only take up 1 byte
+ instead of 4 since they are all multples of 64 which is the alignment of the zmm regs
