@@ -441,3 +441,77 @@ see testSIMD in asm for simd asm
 /**************************************
  * avx512 ep1
  *************************************/
+ new regs are zmm0-31
+ you also get 32 versions of xmm and ymm regs as well
+ and they alias to the lower parts of the zmm regs
+
+k mask regs k0-7
+automatic broadcast to regs, you can broadcast and read automatically
+you can control the rounding mode in the instruction
+modes are nearest, up, down, toward 0
+compressed displacement - displacements() that are multiples of the vector size
+can be stored in the machine code as a byte, rather than a 32 bit displacement.
+
+cpuid is stored on ebx and the various bits indicate support i think
+------------------
+F foundation instructions (EBX:16)
+512 bit versions of older instructions
+k mask, broadcasting rounding control
+------------------
+CD conflict detection (EBX:28)
+detect dups, packed leading zero counts for dwords and qwords
+k mask broadcasting to vectors
+------------------
+ER exp and reciprocals (EBX:27)
+fast approx for exp and recip
+accuracy is 2^-28, much better than sse
+--------------------
+PF prefetch (EBX:26)
+prefetching sparse data from RAM
+-------------------
+VL vector length extensions (EBX:31)
+expands avx512 functionality (above stuff)
+to 128 and 256 versions
+------------------------
+DQ doulbe and quadword (EBX:17)
+new instr for dwords and qwords.
+shifts, bitwise instr and many for masks
+------------------------
+BW bytes and words (EBX:30)
+new instr for dwords and qwords.
+shifts, bitwise instr and many for masks
+------------------------
+IFMA Fused mult and add (EBX:21)
+mult 52 bit ints, producing 104 bit temp result.
+then they add the 52 bits to the dest based on k mask reg
+---------------------------
+VBMI vector bit manip (ECX:1)
+bit manip. includes permutes and byte selection
+---------------------------
+4VNNIW neural net inst for words (EDX:2)
+instr for neural nets using words.
+basically dot prod with high precision
+intermediate results and saturation
+---------------------------
+4FMAPS fused mult add (EDX:3)
+floating point fmadd
+---------------------------
+VPOPCNTDQ vector pop count (EDX:14)
+vector versions of pop count (count the 1s in the elements)
+---------------------------
+VNNI vector neural net instr (ECX:11)
+vector mult and adds for bytes and words for neural nets
+---------------------------
+VBMI2 vector bit manip 2 (ECX:6)
+sparse store and loads, some concat and shift
+---------------------------
+BITALG bit algos (ECX:12)
+some more pop counts, and a shuffle instr for masks.
+---------------------------
+VP2INTERSECT vector pair intersection (EDX:8)
+not well documented.
+stores locations of matching pairs of elements in mask regs
+
+/**************************************
+ * avx512 ep2
+ *************************************/
