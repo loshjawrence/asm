@@ -120,6 +120,7 @@ see moveToRAMAddr in asm.asm
  * ep6 basic arith instr (add sub inc dec)
  *************************************/
 signed carry is on overflow flag, unsiged carry is on carry flag
+
 flags they affect: overflow carry sign zero, aux carry, parity
 LOCK is supported
 The 32 bit versions of add generates more efficient machine code than 64 bit.
@@ -222,6 +223,43 @@ pop rax
 push rax ; put our changed flags on the stack
 popfq ; take off the stack and put into the flags reg
 
+NOTE: An overflow happens when you carry from the second highest bit to the highest bit of a signed integer, for example from bit 6 to bit 7 in a byte.
+Adding 3 to 126 will result in an overflow.. instead of the expected result of 129, you will get -127 (10000001).
+
 /**************************************
- * ep10 conditional jump mov byte set
+ * ep10 conditional jump mov byteset
  *************************************/
+bascially they move,jump,set if true nothing otherwise
+jump versions: (NOTE there are mov and set versions of these as well)
+NOTE: cmov's will clear the upper part of 64bit regs
+NOTE: signed uses equal/not equal and unsigned uses above/below.
+jo - overflow
+jno - not overflow
+jb/jc/jnae - carry unsigned
+jnb/jnc/jae - not carry unsigned
+je/jz - zero
+jne/jnz - not zero
+jbe/jna - blow or equal unsigned
+jnbe/ja - above signed
+js - sign
+jns - not sign
+jp/jpe - parity even (even num 1s)
+jnp/jpo - parity odd (odd num 1s)
+jl/jnge - less signed
+jnl/jge - not less signed
+jle/jng - not greater signed
+jnle/jg - greater signed
+
+/**************************************
+ * ep11 conditional jump mov byteset
+ *************************************/
+div reg/mem
+NOTE: other operand implied, example: 50 / 10 would be
+mov ax, 50
+mov cl, 10
+div cl ; ax
+; byte divide result al, remainder ah
+NOTE:
+; 16 bit divide result ax, remainder dx
+; 32 bit result eax, remainder edx
+; 64 bit result rax, remainder rdx

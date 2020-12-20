@@ -1,4 +1,5 @@
 .data
+; note for ints you can stick an s in front for signed i think
 ; real4 is 32 bits or 4 bytes
 myfloat real4 67.2
 ; real8 is 64 bits or 8 bytes
@@ -14,12 +15,12 @@ myword word 3
 myword2 dw 4
 
 ; double word 32 bits or 4 bytes
-mydword dd 5;
-mydword2 dword 6;
+mydword dd 5
+mydword2 dword 6
 
 ; quad word 64 bits or 8 bytes
-myqword dq 7;
-myqword2 qword 8;
+myqword dq 7
+myqword2 qword 8
 
 .code
 ; can step in the debugger here and add stuff to watch window or pull up the register window with
@@ -54,7 +55,7 @@ callAsmUpper32Clear proc
 
     ret
 callAsmUpper32Clear endp
-end
+
 
 moveToRAMAddr proc
     ; move the RAM addr that mybyte points to into rax
@@ -66,7 +67,6 @@ moveToRAMAddr proc
 
     ret
 moveToRAMAddr endp
-end
 
 triggerFlagCarry proc
     ; set to all 1s
@@ -86,12 +86,12 @@ triggerFlagParity proc
     mov eax, 3
     and eax, eax
 
-    ; parity 0 since even num of 1
+    ; parity 0 since odd num of 1
     mov eax, 7
     and eax, eax
 
     ret
-triggerParityFlag endp
+triggerFlagParity endp
 
 triggerFlagSign proc
     mov eax, 7
@@ -102,5 +102,37 @@ triggerFlagSign proc
     add eax, ecx
 
     ret
-triggerSignFlag endp
-end
+triggerFlagSign endp
+
+; returns gcd of two unsigned 64bit ints
+gcdEuclidsAlgo proc
+    mov rax, 0 ; Early ret value
+    cmp rcx, 0 ; numerator comes in on C
+    je Finished
+    cmp rdx, 0 ; denom comes in on D
+    je Finished
+
+    ; rbx is not scratch, if using must save/restore
+    push rbx
+
+    mov rbx, rdx ; need A and D for div
+
+    LoopHead:
+      xor rdx, rdx ; clear D for div
+      mov rax, rcx ; move lower 64 bits of dividend to A
+      div rbx ; result on A remainder on D
+      mov rcx, rbx ; copy x to y
+      mov rbx, rdx ; copy remainder to B
+
+      cmp rdx, 0
+      jne LoopHead
+
+    mov rax, rcx
+
+    pop rbx
+
+Finished:
+    ret ; rax is return value
+gcdEuclidsAlgo endp
+
+end ; ends the code section?
