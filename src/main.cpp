@@ -21,6 +21,7 @@ int main()
 	// }
 
 	// 128 sse
+	// __m128d would be 2 doubles
 	__m128 a1 = { 0.0, 1.0, 2.0, 3.0 };
 	__m128 a2 = { 2.0, 4.0, 6.0, 8.0 };
 	__m128 a3 = _mm_add_ps(a1, a2);
@@ -30,7 +31,7 @@ int main()
 
 	// 256 are avx
 	// d is for double
-	// p is for packed
+	// p is for packed	
 	__m256d v1 = { 0.0, 1.0, 2.0, 3.0 };
 	__m256d v2 = { 2.0, 4.0, 6.0, 8.0 };
 	__m256d v3 = _mm256_add_pd(v1, v2);
