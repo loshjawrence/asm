@@ -268,4 +268,33 @@ NOTE:
 /**************************************
  * ep12 param passing in Windows C calling convention
  *************************************/
+       int    float/    ptr/obj/array
+              double
 
+1st    rcx    xmm0      rcx
+2nd    rdx    xmm1      rdx
+3rd    r8     xmm2      r8
+4th    r9     xmm3      r9
+more   stack  stack     stack
+
+int and ptr returns are in rax
+floating point returns are in xmm0
+
+to return a byte: put in al
+to return a short: put in ax
+to return a i32: put in eax
+
+/**************************************
+ * ep13 Control Structures
+ *************************************/
+ if, while, do while, for
+ all of these are just using some comparison like `cmp reg, reg`
+ and some jump like jg Label(jump to Label if greater)
+ jumps are costly so it will guess if it needs to take it
+ and if it didn't actually have to take it it has to flush the pipeline.
+ spectre and meltdown hw exploits were related to this since
+ speculative code execution did not do any saftey checks to see if it was allowed to
+ jump to those speculative instructions.
+
+ for compound if statements just cmov into various registers and AND or OR them
+ (whatever the operation is) together then finally do the jump call

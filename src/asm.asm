@@ -22,6 +22,8 @@ mydword2 dword 6
 myqword dq 7
 myqword2 qword 8
 
+someArray dd 1, 2, 3, 4
+
 .code
 ; can step in the debugger here and add stuff to watch window or pull up the register window with
 ; Debug->Windows->Registers
@@ -134,5 +136,25 @@ gcdEuclidsAlgo proc
 Finished:
     ret ; rax is return value
 gcdEuclidsAlgo endp
+
+; example while loop
+; do while would just remove the initial check that can step over the loop
+whileLoop proc
+   lea rax, someArray ; get the addr of someArray into rax
+   xor rdx, rdx ; clear rdx
+   mov ecx, 4
+   cmp ecx, 0
+   jle Finished
+
+LoopHead:
+    ; this is called sib addressing (scale index base)
+    add dword ptr [rax + rdx*4], 3
+    inc rdx
+    dec ecx
+    jnz LoopHead
+
+Finished:
+    ret
+whileLoop endp
 
 end ; ends the code section?

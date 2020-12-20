@@ -4,11 +4,20 @@
 
 // extern means this symbol is external to this file.
 // "C" is the C calling convention, C must be capitalized.
-extern "C" uint64_t gcdEuclidsAlgo(uint64_t x, uint64_t y);
+// extern "C" int* whileLoop();
+extern "C" int* gcdEuclidsAlgo();
 
 int main()
 {
-	std::cout << "\nResult of callAsm(): " << gcdEuclidsAlgo(57*232, 57*82) << "\n";
+	std::cout << "\nResult of callAsm(): " << gcdEuclidsAlgo() << "\n";
+
+	// // someArray
+	// int* someArray = whileLoop();
+	// std::cout << "\nResult of callAsm(): " << someArray << "\n";
+	// for (auto i = 0; i < 4; i++)
+	// {
+	// 	std::cout << " " << *(someArray++);
+	// }
 
 	getchar();
 	return 0;
