@@ -263,3 +263,9 @@ NOTE:
 ; 16 bit divide result ax, remainder dx
 ; 32 bit result eax, remainder edx
 ; 64 bit result rax, remainder rdx
+
+
+/**************************************
+ * ep12 param passing in Windows C calling convention
+ *************************************/
+
