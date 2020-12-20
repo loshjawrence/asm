@@ -298,3 +298,135 @@ to return a i32: put in eax
 
  for compound if statements just cmov into various registers and AND or OR them
  (whatever the operation is) together then finally do the jump call
+
+
+/**************************************
+ * ep14 Control Structures
+ *************************************/
+masm has some functionality for structures
+you do it like so. This goes in the .data segment
+Point struct
+  ; ? means dont init
+  x dd ?
+  y dd ?
+Point ends
+
+myPoint Point { 0, 0 }
+look in asm.asm and main for Point example.
+the structure must be defined in cpp land and asm land
+you need to know about how c aligns its struct members
+basically the member must fall on its natural alignment
+if you want the struct to small as possible,
+generally you want to sort the members by size from largest to smallest.
+for example:
+struct MyStruct
+{
+    char c;   // offset 0
+    int i;    // offset 4
+    short s;  // offset 8
+    double d; // offset 16
+};            // total of 24 bytes
+
+If you leave the cpp land struct like this you will need to pad your asm shadowing struct:
+MyStruct struct
+    c db ?
+    db 3 dup(0) ; padding of 3 bytes assigned to 0
+    i dd ?
+    s dw ?
+    db 6 dup(0) ; padding of 6 bytes assigned to 0
+    d real8 ?
+MyStruct ends
+
+You can avoid this if you use:
+#pragma pack(1) // this means align data to addresses divisible by 1, so members can land anywhere
+So this puts your cpp land members back to back without natural padding
+
+in asm land you can supply defaults
+Point struct
+  x dd 100
+  y dd 100
+Point ends
+
+p1 Point {} ; use defaults
+p2 Point { , 99 } ; x 100 y 99
+
+UNIONS=======================
+cpp land
+union MyUnion
+{
+    char c;
+    short s;
+    int i;
+    long long ll;
+};
+
+asm land:
+MyUnion union
+    c db ?
+    s dw ?
+    i dd ?
+    ll dq ?
+MyUnion ends ; yes its ends not endu
+
+NOTE: you can nest structures too:
+Point struct
+    x real4 ?
+    y real4 ?
+Point ends
+
+Line struct
+    start Point { 0.0, 0.0 }
+    end Point {}
+Line ends
+
+line1 Line {}
+line2 Line { \ ; NOTE: slashes required for multiple lines
+ { 100.0, 89.0 }, \
+ { 25.0, 78.0 } \
+}
+
+
+
+/**************************************
+ * ep15 SIMD
+ *************************************/
+SIMD instr sets:
+SSE, AVX, AVX512, MMX
+
+SSE2 allowed double precision ints and floats
+SSE3 allowed horizontal ops
+SSE4 allowed more horizontal ops, strings, blends, etc.
+AVX 256 bits, for floats
+AVX2 added more int ops
+AVX512 512 bits
+MMX integers old, obselete
+
+REGISTERS:
+mmx had 8 regs mm0-7
+sse had 16 regs xmm0-15
+avx had 16 regs ymm0-15
+avx512 had 32 regs zmm0-31
+for avx512 you get the register aliasing similar to normal asm programming
+i.e.
+| zmm0      | ymm0 | xmm0 |
+| zmm1      | ymm1 | xmm1 |
+...
+
+in sse you get 128 bit regs, the xmm regs
+and you can view the bits as any of the data types:
+2 doubles, 4 floats, 2 qwords, 4 dwords, 8 words, 16 bytes
+
+in avx has 256 bit regs, the ymm regs
+so you can do double of all the above
+
+in avx512 has 512 bit regs, the zmm regs
+so you can do double the ops of avx and 4x the ops of sse
+
+see main.cpp for some sse/avx intrinsics
+see testSIMD in asm for simd asm
+
+
+
+/**************************************
+ * avx512 ep1
+ *************************************/

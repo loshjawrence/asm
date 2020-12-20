@@ -1,6 +1,21 @@
 .data
+; I believe this section requires data alignment
+; i.e. add padding dummy data
 ; note for ints you can stick an s in front for signed i think
-; real4 is 32 bits or 4 bytes
+; real4 is 4 bytes, a float32
+; numbers are decimal by default, you can specify
+; binary with a b suffix
+; hex with a h suffix
+
+; used in whileLoop
+someArray dd 1, 2, 3, 4
+
+; used in testSIMD
+ints0 dd 0, 1, 2, 3
+ints1 dd 5, 5, 5, 5
+
+floats0 real4 0.0, 1.0, 2.0, 3.0
+floats1 real4 5.0, 5.0, 5.0, 5.0
 myfloat real4 67.2
 ; real8 is 64 bits or 8 bytes
 mydouble real8 7.2
@@ -22,7 +37,6 @@ mydword2 dword 6
 myqword dq 7
 myqword2 qword 8
 
-someArray dd 1, 2, 3, 4
 
 .code
 ; can step in the debugger here and add stuff to watch window or pull up the register window with
@@ -156,5 +170,32 @@ LoopHead:
 Finished:
     ret
 whileLoop endp
+
+testSIMD proc
+    ; move unaligned double quad word
+    ; reads 128 bits into xmm0
+    movdqu xmm0, xmmword ptr [ ints0 ]
+    movdqu xmm1, xmmword ptr [ ints1 ]
+
+    ; packed add dwords
+    ; views contents as qwords or 32 bit ints
+    paddd xmm0, xmm1
+    ; could also do sub,mul,div
+
+    ; mov aligned packed singles
+    ; moves 128 bits of floating point data into the reg
+    movaps xmm0, xmmword ptr [ floats0 ]
+    movaps xmm1, xmmword ptr [ floats1 ]
+
+    ; add packed singles
+    ; views the contents as singles or 32bit floats
+    addps xmm0, xmm1
+    ; could also do sub,mul,div
+
+    ; NOTE: double would be real8 data and stuff like
+    ; movapd, addpd, subpd, etc.
+
+    ret
+testSIMD endp
 
 end ; ends the code section?
